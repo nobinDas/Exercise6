@@ -7,9 +7,9 @@ public class StaticMediator implements StMediator{
     private Agent a1, c1;
     private Mole m1;
     //step 2
-    //private Agent a2, a3;
-    //private Mole m2, m3;
-    //private CompositeAgent duo;
+    private Agent a2, a3;
+    private Mole m2, m3;
+    private CompositeAgent duo;
 
     public void createSpyTeam () {
 
@@ -22,11 +22,11 @@ public class StaticMediator implements StMediator{
         c1 = new Agent("cleaner ", " no secret ",this);
 
         //step2
-        //a2 = new Agent("a2 ", " ultra secret 2 ",this);
-        //m2 = new Mole("m2 ", " deep secret 2 ", this);
-        //a3 = new Agent("a3 ", " ultra secret 3 ",this);
-        //m3 = new Mole("m3 ", " deep secret 3 ", this);
-        //duo = new CompositeAgent (new ArrayList<CoordinatedAsset>(Arrays.asList(a2, m2)));
+        a2 = new Agent("a2 ", " ultra secret 2 ",this);
+        m2 = new Mole("m2 ", " deep secret 2 ", this);
+        a3 = new Agent("a3 ", " ultra secret 3 ",this);
+        m3 = new Mole("m3 ", " deep secret 3 ", this);
+        duo = new CompositeAgent (new ArrayList<CoordinatedAsset>(Arrays.asList(a2, m2)));
 
 
     }
@@ -48,13 +48,14 @@ public class StaticMediator implements StMediator{
         c1.statusChange();
     }
 
-//    public void runScenario2 () {
-//        System.out.println("Initial set up");
-//        printStatus();
-//        duo.statusChange();
-//        a3.statusChange();
-//        m3.statusChange();
-//    }
+    public void runScenario2 () {
+        System.out.println("Initial set up");
+        printStatus();
+        System.out.println("team status changed");
+        duo.statusChange();
+        a3.statusChange();
+        m3.statusChange();
+    }
 
     private void printStatus() {
         System.out.println(s1);
@@ -65,11 +66,11 @@ public class StaticMediator implements StMediator{
         System.out.println(m1);
         System.out.println(c1);
         //Step 2
-        //System.out.println(duo);
+        System.out.println(duo);
     }
 
     @Override
-    public void statusChanged(Status status) {
+    public void statusChanged(CoordinatedAsset status) {
         String temp;
         if(status == s1){
             System.out.println("s1 status update:");
@@ -102,10 +103,30 @@ public class StaticMediator implements StMediator{
             temp = null;
         }else if(status == c1){
             System.out.println("cleaner status update:");
-//            a1.setStatus(m);
-//            m1.setStatus(m);
             a1.setStatus(null);
             m1.setStatus(null);
+        }else if(status == a2){
+            System.out.println("a2 status update:");
+            s1.setClearance(77);
+            a2.setSecret(a1.getSecret().concat(m1.getSecret()));
+        }else if(status == m2){
+            System.out.println("m2 status update:");
+            temp = m2.getSecret();
+            m2.setSecret(s1.getSecret());
+            m2.setSecret(s1.getSecret());
+            s1.setSecret(temp);
+            temp = null;
+        }else if(status == a3){
+            System.out.println("a3 status update:");
+            duo.setSecret(a1.getSecret().concat(m2.getSecret()));
+            a3.setSecret(s1.getSecret());
+            m3.setSecret("forgotten");
+        }else if(status == m3){
+            System.out.println("m3 status update:");
+            temp = duo.getSecret();
+            duo.setSecret(m1.getSecret());
+            m1.setSecret(temp);
+            temp = null;
         }
         printStatus();
     }

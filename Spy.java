@@ -1,4 +1,4 @@
-public class Spy implements Status{
+public class Spy implements CoordinatedAsset{
     private StMediator mediator;
     private String name;
     private String secret;
@@ -11,6 +11,8 @@ public class Spy implements Status{
         setStatus(m);
     }
 
+    public StMediator getMediator(){ return mediator;}
+
     public void setStatus(StMediator m) {
         this.mediator = m;
     }
@@ -19,7 +21,7 @@ public class Spy implements Status{
         mediator.statusChanged(this);
     }
 
-    void setSecret(String secret){
+    public void setSecret(String secret){
         this.secret = secret;
     }
 
