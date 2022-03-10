@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class StaticMediator {
+public class StaticMediator implements StMediator{
 
     private Spy s1, s2, s3, s4;
     private Agent a1, c1;
@@ -48,13 +48,13 @@ public class StaticMediator {
         c1.statusChange();
     }
 
-    public void runScenario2 () {
-        System.out.println("Initial set up");
-        printStatus();
-        duo.statusChange();
-        a3.statusChange();
-        m3.statusChange();
-    }
+//    public void runScenario2 () {
+//        System.out.println("Initial set up");
+//        printStatus();
+//        duo.statusChange();
+//        a3.statusChange();
+//        m3.statusChange();
+//    }
 
     private void printStatus() {
         System.out.println(s1);
@@ -68,6 +68,48 @@ public class StaticMediator {
         //System.out.println(duo);
     }
 
-   //missing code
+    @Override
+    public void statusChanged(Status status) {
+        String temp;
+        if(status == s1){
+            System.out.println("s1 status update:");
+            temp = s2.getSecret();
+            s2.setSecret(s1.getSecret());
+            s1.setSecret(temp);
+            temp = null;
+        }else if(status == s2){
+            System.out.println("s2 status update:");
+            s2.setSecret(s2.getSecret().concat(s3.getSecret()));
+        }else if(status == s3){
+            System.out.println("s3 status update:");
+            s3.setClearance(s1.getClearance()+ s2.getClearance());
+            s4.setClearance(0);
+        }else if(status == s4){
+            System.out.println("s4 status update:");
+            if(s4.getClearance() > 0){
+                s1.setClearance(s4.getClearance());
+                s2.setClearance(s3.getClearance());
+            }
+        }else if(status == a1){
+            System.out.println("a1 status update:");
+            a1.setSecret(s3.getSecret());
+            m1.setSecret("forgotten");
+        }else if(status == m1){
+            System.out.println("m1 status update:");
+            temp = m1.getSecret();
+            m1.setSecret(s4.getSecret());
+            s4.setSecret(temp);
+            temp = null;
+        }else if(status == c1){
+            System.out.println("cleaner status update:");
+//            a1.setStatus(m);
+//            m1.setStatus(m);
+            a1.setStatus(null);
+            m1.setStatus(null);
+        }
+        printStatus();
+    }
+
+    //missing code
 
 }
